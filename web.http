@@ -12,3 +12,9 @@ GET http://localhost:3001/api/persons/2
 
 ### Error test GET one person for id
 GET http://localhost:3001/api/persons/9999
+
+### DELETE a person for id
+DELETE http://localhost:3001/api/persons/2
+
+### Error test DELETE a person for id
+DELETE http://localhost:3001/api/persons/999

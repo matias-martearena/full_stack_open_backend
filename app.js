@@ -2,7 +2,7 @@ import express from 'express'
 import fs from 'node:fs'
 
 const app = express()
-const persons = JSON.parse(fs.readFileSync('./data.json', 'utf-8'))
+let persons = JSON.parse(fs.readFileSync('./data.json', 'utf-8'))
 
 app.use(express.json())
 
@@ -27,6 +27,18 @@ app.get('/api/persons/:id', (req, res) => {
   const person = persons.find(person => person.id === id)
 
   person ? res.send(person) : res.status(404).end()
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const person = persons.find(person => person.id === id)
+
+  if (person) {
+    persons = persons.filter(person => person.id !== id)
+    res.status(204).end()
+  } else {
+    res.status(404).send('Person was not found')
+  }
 })
 
 const PORT = process.env.PORT ?? 3001
