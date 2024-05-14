@@ -3,3 +3,6 @@ GET http://localhost:3001
 
 ### GET all notes
 GET http://localhost:3001/api/persons
+
+### GET how many contacts the phonebook has
+GET http://localhost:3001/info
