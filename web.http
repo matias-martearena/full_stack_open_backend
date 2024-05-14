@@ -1,0 +1,5 @@
+### Home page
+GET http://localhost:3001
+
+### GET all notes
+GET http://localhost:3001/api/persons
