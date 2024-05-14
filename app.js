@@ -1,14 +1,23 @@
 import express from 'express'
 import fs from 'node:fs'
-import logger from 'morgan'
-
-logger('tiny')
+import morgan from 'morgan'
 
 const app = express()
 let persons = JSON.parse(fs.readFileSync('./data.json', 'utf-8'))
 
+// Return the new person info on the console
+morgan.token('newPerson', (req) => {
+  const { name, number } = req.body
+
+  if (name || number) {
+    return JSON.stringify({ name, number })
+  } else {
+    return ' '
+  }
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :newPerson'))
 app.use(express.json())
-app.use(logger('dev'))
 
 app.get('/', (req, res) => {
   res.send('<h1>Phonebook backend</h1>')
