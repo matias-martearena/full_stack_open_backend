@@ -6,3 +6,9 @@ GET http://localhost:3001/api/persons
 
 ### GET how many contacts the phonebook has
 GET http://localhost:3001/info
+
+### GET one persons for id
+GET http://localhost:3001/api/persons/2
+
+### Error test GET one person for id
+GET http://localhost:3001/api/persons/9999
