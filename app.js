@@ -1,10 +1,14 @@
 import express from 'express'
 import fs from 'node:fs'
+import logger from 'morgan'
+
+logger('tiny')
 
 const app = express()
 let persons = JSON.parse(fs.readFileSync('./data.json', 'utf-8'))
 
 app.use(express.json())
+app.use(logger('dev'))
 
 app.get('/', (req, res) => {
   res.send('<h1>Phonebook backend</h1>')
@@ -68,6 +72,7 @@ app.post('/api/persons', (req, res) => {
 })
 
 const PORT = process.env.PORT ?? 3001
+
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`)
 })
