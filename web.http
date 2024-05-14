@@ -18,3 +18,21 @@ DELETE http://localhost:3001/api/persons/2
 
 ### Error test DELETE a person for id
 DELETE http://localhost:3001/api/persons/999
+
+### Create a new persons on the phonebook
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "person test",
+  "number": "123-456-789"
+}
+
+### Error test Create a new persons on the phonebook
+POST http://localhost:3001/api/persons
+Content-Type: text/plain
+
+{
+  "name": "person test",
+  "number": "123-456-789"
+}
