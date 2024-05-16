@@ -9,7 +9,7 @@
     "dev": "node --watch app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist && cd ../full_stack_open/part2/2.16 - 2.17 The Phonebook && npm run build && cp -r dist ../../../full_stack_open_backend",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm start"
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push -u origin main && npm start"
   },
   "author": "Matias Martearena",
   "license": "ISC",
