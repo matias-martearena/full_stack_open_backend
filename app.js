@@ -1,11 +1,11 @@
 import express from 'express'
 import fs from 'node:fs'
 import morgan from 'morgan'
+import { corsMiddleware } from './middlewares/cors.js'
 
 const app = express()
-let persons = JSON.parse(fs.readFileSync('./data.json', 'utf-8'))
+let persons = JSON.parse(fs.readFileSync('./database/data.json', 'utf-8'))
 
-// Return the new person info on the console
 morgan.token('newPerson', (req) => {
   const { name, number } = req.body
 
@@ -16,8 +16,10 @@ morgan.token('newPerson', (req) => {
   }
 })
 
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :newPerson'))
 app.use(express.json())
+app.use(corsMiddleware())
+app.use(express.static('dist'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :newPerson'))
 
 app.get('/', (req, res) => {
   res.send('<h1>Phonebook backend</h1>')
