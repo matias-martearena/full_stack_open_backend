@@ -1,10 +1,12 @@
-import express from 'express'
 import fs from 'node:fs'
+import express from 'express'
+import dotenv from 'dotenv'
 import morgan from 'morgan'
-import { corsMiddleware } from './middlewares/cors.js'
 
-const app = express()
-let persons = JSON.parse(fs.readFileSync('./database/data.json', 'utf-8'))
+import { corsMiddleware } from './middlewares/cors.js'
+import Person from './modules/person.js'
+
+dotenv.config()
 
 morgan.token('newPerson', (req) => {
   const { name, number } = req.body
@@ -16,6 +18,10 @@ morgan.token('newPerson', (req) => {
   }
 })
 
+let persons = JSON.parse(fs.readFileSync('./database/data.json', 'utf-8'))
+
+const app = express()
+
 app.use(express.json())
 app.use(corsMiddleware())
 app.use(express.static('dist'))
@@ -25,10 +31,6 @@ app.get('/', (req, res) => {
   res.send('<h1>Phonebook backend</h1>')
 })
 
-app.get('/api/persons', (req, res) => {
-  res.json(persons)
-})
-
 app.get('/info', (req, res) => {
   res.send(`
   <p>Phonebook has info for ${persons.length} people</p>
@@ -36,12 +38,20 @@ app.get('/info', (req, res) => {
   `)
 })
 
+app.get('/api/persons', (req, res) => {
+  Person
+    .find()
+    .then(person => {
+      res.json(person)
+    })
+})
+
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-
-  const person = persons.find(person => person.id === id)
-
-  person ? res.send(person) : res.status(404).end()
+  Person
+    .findById(req.params.id)
+    .then(person => {
+      res.json(person)
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
