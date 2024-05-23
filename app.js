@@ -75,21 +75,22 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  if (persons.find(p => p.name === body.name)) {
-    return res.status(400).json({
-      error: 'The contact name already exists'
-    })
-  }
+  // if (Person.find({ name: body.name })) {
+  //   return res.status(400).json({
+  //     error: 'The contact name already exists'
+  //   })
+  // }
 
-  const newPerson = {
-    id: Math.floor(Math.random() * (10000 - persons.length)),
+  const person = new Person({
     name: body.name,
     number: body.number
-  }
+  })
 
-  persons = persons.concat(newPerson)
-
-  res.json(newPerson)
+  person
+    .save()
+    .then(personSaved => {
+      res.json(personSaved)
+    })
 })
 
 const PORT = process.env.PORT ?? 3001
