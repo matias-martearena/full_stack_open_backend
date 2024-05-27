@@ -1,6 +1,5 @@
-import fs from 'node:fs'
-import express from 'express'
 import dotenv from 'dotenv'
+import express from 'express'
 import morgan from 'morgan'
 
 import { corsMiddleware } from './middlewares/cors.js'
@@ -18,55 +17,48 @@ morgan.token('newPerson', (req) => {
   }
 })
 
-let persons = JSON.parse(fs.readFileSync('./database/data.json', 'utf-8'))
-
 const app = express()
 
+app.use(express.static('dist'))
 app.use(express.json())
 app.use(corsMiddleware())
-app.use(express.static('dist'))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :newPerson'))
 
 app.get('/', (req, res) => {
   res.send('<h1>Phonebook backend</h1>')
 })
 
-app.get('/info', (req, res) => {
-  res.send(`
-  <p>Phonebook has info for ${persons.length} people</p>
-  <p>${new Date()}</p>
-  `)
+app.get('/info', (req, res, next) => {
+  Person
+    .find()
+    .then(result => {
+      res.send(`
+        <p>Phonebook has info for ${result.length} people</p>
+        <p>${new Date()}</p>
+      `)
+    })
+    .catch(error => next(error))
 })
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
   Person
     .find()
     .then(person => {
       res.json(person)
     })
+    .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   Person
     .findById(req.params.id)
     .then(person => {
       res.json(person)
     })
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
-    persons = persons.filter(person => person.id !== id)
-    res.status(204).end()
-  } else {
-    res.status(404).send('Person was not found')
-  }
-})
-
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const { body } = req
 
   if (!body.name || !body.number) {
@@ -75,6 +67,7 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
+  // TODO: ----- Show error if contact name already exists -----
   // if (Person.find({ name: body.name })) {
   //   return res.status(400).json({
   //     error: 'The contact name already exists'
@@ -91,7 +84,24 @@ app.post('/api/persons', (req, res) => {
     .then(personSaved => {
       res.json(personSaved)
     })
+    .catch(error => next(error))
 })
+
+app.delete('/api/persons/:id', (req, res, next) => {
+  Person
+    .findByIdAndDelete(req.params.id)
+    .then(result => {
+      if (result === null) res.status(404).send({ error: 'Contact not exists' })
+      res.status(204).end()
+    })
+    .catch(error => next(error))
+})
+
+const unknowEndpoint = (req, res, next) => {
+  res.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknowEndpoint)
 
 const PORT = process.env.PORT ?? 3001
 

@@ -10,10 +10,7 @@ GET http://localhost:3001/api/persons
 ### GET one persons for id
 GET http://localhost:3001/api/persons/664f52ff4c86f544cb82eeb9
 
-### Error test GET one person for id
-GET http://localhost:3001/api/persons/9999
-
-### Create a new persons on the phonebook || Try to catch error if name already exists
+### Create a new persons on the phonebook
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
@@ -22,7 +19,27 @@ Content-Type: application/json
   "number": "123-456-789"
 }
 
-### Error test Create a new persons on the phonebook
+### DELETE a person for id
+DELETE http://localhost:3001/api/persons/664f50f01ef0d5262893cdf3
+
+### Update a person for id
+PUT http://localhost:3001/api/persons/id
+Content-Type: application/json
+
+{
+  "number": "000-0000000"
+}
+
+### Error test ------------------------
+
+### Error test GET one person for not exists id
+GET http://localhost:3001/api/persons/664f52ff4c86f544cb82eeb0
+
+### Error test GET one person for not correct format id
+
+GET http://localhost:3001/api/persons/9999
+
+### Error test Create a new persons on the phonebook with a different content type
 POST http://localhost:3001/api/persons
 Content-Type: text/plain
 
@@ -31,8 +48,25 @@ Content-Type: text/plain
   "number": "123-456-789"
 }
 
-### DELETE a person for id
-DELETE http://localhost:3001/api/persons/2
+### Create a contact with a different schema
+POST http://localhost:3001/api/notes
+Content-Type: application/json
 
-### Error test DELETE a person for id
+{
+  "name": 123123,
+  "number": 12
+}
+
+### Error test DELETE a person for an incorrect type id
 DELETE http://localhost:3001/api/persons/999
+
+### Error test DELETE a non exists person
+DELETE http://localhost:3001/api/persons/id
+
+### Update a person for id not found
+PUT http://localhost:3001/api/notes/id
+Content-Type: application/json
+
+{
+  "number": true
+}
