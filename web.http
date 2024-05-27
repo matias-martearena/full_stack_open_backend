@@ -23,7 +23,7 @@ Content-Type: application/json
 DELETE http://localhost:3001/api/persons/665498d7f09c1ef4bc1a8d4a
 
 ### Update a person for id
-PUT http://localhost:3001/api/persons/id
+PUT http://localhost:3001/api/persons/66549a0ad60f66e5ecc30a6d
 Content-Type: application/json
 
 {

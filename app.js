@@ -75,13 +75,6 @@ app.post('/api/persons', (req, res, next) => {
     })
   }
 
-  // TODO: ----- Show error if contact name already exists -----
-  // if (Person.find({ name: body.name })) {
-  //   return res.status(400).json({
-  //     error: 'The contact name already exists'
-  //   })
-  // }
-
   const person = new Person({
     name: body.name,
     number: body.number
@@ -101,6 +94,23 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .then(result => {
       if (result === null) return res.status(404).send({ error: 'Contact not exists' })
       return res.status(204).end()
+    })
+    .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+  const { body } = req
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person
+    .findByIdAndUpdate(req.params.id, person, { new: true })
+    .then(updatedPerson => {
+      if (updatedPerson === null) return res.status(404).send({ error: 'Contact not found' })
+      return res.json(updatedPerson)
     })
     .catch(error => next(error))
 })
