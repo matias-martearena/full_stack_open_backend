@@ -72,9 +72,17 @@ DELETE http://localhost:3001/api/persons/999
 DELETE http://localhost:3001/api/persons/665498a9f09c1ef4bc1a8d44
 
 ### Update a person for id not found
-PUT http://localhost:3001/api/notes/id
+PUT http://localhost:3001/api/persons/66549a0ad60f66e5ecc30a6p
 Content-Type: application/json
 
 {
   "number": true
+}
+
+### Update a person with a error in validation name
+PUT http://localhost:3001/api/persons/66549a0ad60f66e5ecc30a6d
+Content-Type: application/json
+
+{
+  "name": "lo"
 }

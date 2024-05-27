@@ -99,15 +99,13 @@ app.delete('/api/persons/:id', (req, res, next) => {
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-  const { body } = req
-
-  const person = {
-    name: body.name,
-    number: body.number
-  }
+  const { name, number } = req.body
 
   Person
-    .findByIdAndUpdate(req.params.id, person, { new: true })
+    .findByIdAndUpdate(
+      req.params.id,
+      { name, number },
+      { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => {
       if (updatedPerson === null) return res.status(404).send({ error: 'Contact not found' })
       return res.json(updatedPerson)
