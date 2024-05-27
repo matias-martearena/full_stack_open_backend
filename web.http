@@ -56,6 +56,15 @@ Content-Type: application/json
   "number": 000
 }
 
+### Error test Create a new persons on the phonebook with a name shortly
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "lo",
+  "number": "123-456-789"
+}
+
 ### Error test DELETE a person for an incorrect type id
 DELETE http://localhost:3001/api/persons/999
 
