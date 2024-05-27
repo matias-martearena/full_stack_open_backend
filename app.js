@@ -3,6 +3,7 @@ import express from 'express'
 import morgan from 'morgan'
 
 import { corsMiddleware } from './middlewares/cors.js'
+import { errorHandler } from './middlewares/errorHandler.js'
 import Person from './modules/person.js'
 
 dotenv.config()
@@ -25,14 +26,14 @@ app.use(corsMiddleware())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :newPerson'))
 
 app.get('/', (req, res) => {
-  res.send('<h1>Phonebook backend</h1>')
+  return res.send('<h1>Phonebook backend</h1>')
 })
 
 app.get('/info', (req, res, next) => {
   Person
     .find()
     .then(result => {
-      res.send(`
+      return res.send(`
         <p>Phonebook has info for ${result.length} people</p>
         <p>${new Date()}</p>
       `)
@@ -44,7 +45,7 @@ app.get('/api/persons', (req, res, next) => {
   Person
     .find()
     .then(person => {
-      res.json(person)
+      return res.json(person)
     })
     .catch(error => next(error))
 })
@@ -53,7 +54,8 @@ app.get('/api/persons/:id', (req, res, next) => {
   Person
     .findById(req.params.id)
     .then(person => {
-      res.json(person)
+      if (person === null) return res.status(404).send({ error: 'Contact not exists' })
+      return res.json(person)
     })
     .catch(error => next(error))
 })
@@ -64,6 +66,12 @@ app.post('/api/persons', (req, res, next) => {
   if (!body.name || !body.number) {
     return res.status(400).json({
       error: 'Name and number are required fields'
+    })
+  }
+
+  if (typeof (body.name) !== 'string' || typeof (body.number) !== 'string') {
+    return res.status(400).json({
+      error: 'Name and number must be string characters'
     })
   }
 
@@ -82,7 +90,7 @@ app.post('/api/persons', (req, res, next) => {
   person
     .save()
     .then(personSaved => {
-      res.json(personSaved)
+      return res.json(personSaved)
     })
     .catch(error => next(error))
 })
@@ -91,8 +99,8 @@ app.delete('/api/persons/:id', (req, res, next) => {
   Person
     .findByIdAndDelete(req.params.id)
     .then(result => {
-      if (result === null) res.status(404).send({ error: 'Contact not exists' })
-      res.status(204).end()
+      if (result === null) return res.status(404).send({ error: 'Contact not exists' })
+      return res.status(204).end()
     })
     .catch(error => next(error))
 })
@@ -102,6 +110,7 @@ const unknowEndpoint = (req, res, next) => {
 }
 
 app.use(unknowEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT ?? 3001
 
