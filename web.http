@@ -30,6 +30,11 @@ Content-Type: application/json
   "number": "000-0000000"
 }
 
+
+
+
+
+
 ### --------------------- Error test ---------------------
 
 ### Error test GET one person for not exists id
@@ -65,6 +70,15 @@ Content-Type: application/json
   "number": "123-456-789"
 }
 
+### Error test Create a new persons on the phonebook with a incorrect number type
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Person test 2",
+  "number": "4-22334455"
+}
+
 ### Error test DELETE a person for an incorrect type id
 DELETE http://localhost:3001/api/persons/999
 
@@ -85,4 +99,12 @@ Content-Type: application/json
 
 {
   "name": "lo"
+}
+
+### Update a person with a error in validation name
+PUT http://localhost:3001/api/persons/6654f545db2f74ec6f549025
+Content-Type: application/json
+
+{
+  "number": "1-11111111111"
 }

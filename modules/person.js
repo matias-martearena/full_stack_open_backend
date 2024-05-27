@@ -20,7 +20,16 @@ const personSchema = new mongoose.Schema({
     minLength: 3,
     required: true
   },
-  number: String
+  number: {
+    type: String,
+    minLength: 8,
+    validate: {
+      validator: function (v) {
+        return /\d{2,3}-\d{7,8}/.test(v)
+      },
+      message: 'The entered number is invalid. The number must contain 9 to 11 characters, with the first two or three separated from the rest by a hyphen (-)'
+    }
+  }
 })
 
 personSchema.set('toJSON', {
